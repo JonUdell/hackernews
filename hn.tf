@@ -10,5 +10,5 @@ resource "steampipecloud_workspace_mod" "steampipe_stats" {
   organization = "acme" 
   workspace_handle = "jon"
   path = "github.com/judell/hackernews"
-  constraint = "v0.2"
+  constraint = "v0.3"
 }
