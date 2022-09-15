@@ -46,6 +46,7 @@ Repos
 
     chart {
       width = 4
+      type = "donut"
       title = "company repos: last 30 days"
       query = query.repo_counts_by_company
       args = [ local.companies ]
