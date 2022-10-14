@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-resource "steampipecloud_workspace_mod" "steampipe_stats" {
+resource "steampipecloud_workspace_mod" "hackernews" {
   organization = "acme" 
   workspace_handle = "jon"
   path = "github.com/judell/hackernews"
