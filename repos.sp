@@ -32,13 +32,27 @@ Repos
   container  {
 
     table {
+      width = 8
       title = "company repos: last 30 days"
       query = query.repos_by_company
       args = [ local.companies ]
       column "by" {
         href = "${local.host}/hackernews.dashboard.Submissions?input.hn_user={{.'by'}}"
       }
+      column "url" {
+        wrap = "all"
+      }
     }
+
+    chart {
+      width = 4
+      type = "donut"
+      title = "company repos: last 30 days"
+      query = query.repo_counts_by_company
+      args = [ local.companies ]
+
+    }
+
 
   }
 
