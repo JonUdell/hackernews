@@ -60,7 +60,7 @@ query "repo_counts_by_company" {
     group by
       h.name
     order by
-      h.name
+      count desc
   EOQ
   param "names" {}
 }
