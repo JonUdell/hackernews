@@ -31,7 +31,7 @@ Sources
 
 
   table {
-    width = 6
+    width = 4
     query = query.domains
     column "domain" {
       href = "${local.host}/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
@@ -39,7 +39,7 @@ Sources
   }
 
   container {
-    width = 6
+    width = 8
 
     container  {
       

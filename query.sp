@@ -156,10 +156,7 @@ query "domains" {
     avg_and_max as (
       select
         substring(url from 'http[s]*://([^/$]+)') as domain,
-        avg(score::int) as avg_score,
-        max(score::int) as max_score,
-        avg(descendants::int) as avg_comments,
-        max(descendants::int) as max_comments
+        max(score::int) as max_score
       from
         hn_items_all
       group by
@@ -179,10 +176,7 @@ query "domains" {
     select
       a.domain,
       c.count,
-      a.max_score,
-      round(a.avg_score, 1) as avg_score,
-      a.max_comments,
-      round(a.avg_comments, 1) as avg_comments
+      a.max_score
     from
       avg_and_max a
     join
@@ -226,9 +220,8 @@ query "source_detail" {
       h.id as link,
       to_char(h.time::timestamptz, 'MM-DD hHH24') as time,
       h.score,
-      h.url,
-      ( select count(*) from hn_items_all where url = h.url ) as occurrences,
-      h.title
+      h.title,
+      h.url
     from
       hn_items_all h
     where 
