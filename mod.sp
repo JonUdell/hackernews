@@ -18,6 +18,7 @@ locals {
     "Google",
     "IBM",
     "Intel ",
+    "Mastodon",
     "Microsoft",
     "Mozilla",
     "Netflix",
@@ -128,6 +129,9 @@ chart "companies_base" {
     }
     point "Intel" {
       color = "Wheat"
+    }
+    point "Mastodon" {
+      color = "Indigo"
     }
     point "Microsoft" {
       color = "Blue"
