@@ -9,21 +9,21 @@ dashboard "Sources" {
     text {
       width = 6
       value = <<EOT
-[Home](${local.host}/hackernews.dashboard.Home)
+[Home](http://${local.host}:9194/hackernews.dashboard.Home)
 🞄
-[People](${local.host}/hackernews.dashboard.People)
+[People](http://${local.host}:9194/hackernews.dashboard.People)
 🞄
-[Posts](${local.host}/hackernews.dashboard.Posts)
+[Posts](http://${local.host}:9194/hackernews.dashboard.Posts)
 🞄
-[Repos](${local.host}/hackernews.dashboard.Repos)
+[Repos](http://${local.host}:9194/hackernews.dashboard.Repos)
 🞄
-[Search](${local.host}/hackernews.dashboard.Search)
+[Search](http://${local.host}:9194/hackernews.dashboard.Search)
 🞄
 Sources
 🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
+[Submissions](http://${local.host}:9194/hackernews.dashboard.Submissions?input.hn_user=none)
 🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
+[Urls](http://${local.host}:9194/hackernews.dashboard.Urls)
       EOT
     }
 
@@ -31,15 +31,15 @@ Sources
 
 
   table {
-    width = 4
+    width = 6
     query = query.domains
     column "domain" {
-      href = "${local.host}/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
+      href = "http://${local.host}:9194/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
     }    
   }
 
   container {
-    width = 8
+    width = 6
 
     container  {
       
@@ -60,10 +60,10 @@ Sources
               domain as value
             from
               domains
+            where
+              domain is not null
             order by
               domain
-	    where
-	      domain is not null
           EOQ    
         }
 
@@ -71,14 +71,13 @@ Sources
           width = 6
           value = <<EOT
 Examples: 
-[www.nytimes.com](${local.host}/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
-[github.com](${local.host}/hackernews.dashboard.Sources?input.domain=github.com),
-[simonwillison.net](${local.host}/hackernews.dashboard.Sources?input.domain=simonwillison.net)
+[www.nytimes.com](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
+[github.com](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=github.com),
+[simonwillison.net](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=simonwillison.net)
         EOT
         }
 
       }
-
 
       chart {
         args = [
