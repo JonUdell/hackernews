@@ -62,6 +62,8 @@ Sources
               domains
             order by
               domain
+	    where
+	      domain is not null
           EOQ    
         }
 
