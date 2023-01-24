@@ -74,6 +74,7 @@ locals {
 
   dbs = [
     "DB2",
+    "ClickHouse",
     "Citus",
     "CouchDB",
     "MongoDB",
@@ -278,6 +279,9 @@ chart "db_base" {
   series "mentions" {
     point "DB2" {
       color = "brown"
+    }
+    point "ClickHouse" {
+      color = "#E9C84C"
     }
     point "Citus" {
       color = "green"
