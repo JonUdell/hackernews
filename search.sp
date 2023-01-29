@@ -61,7 +61,7 @@ Examples:
           id,
           by,
           title,
-          to_char(time::timestamptz, 'MM-DD hHH24') as time,
+          to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
           case 
             when url = '<null>' then ''
             else url

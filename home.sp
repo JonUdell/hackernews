@@ -56,7 +56,7 @@ Home
       width = 2
       sql = <<EOQ
         select
-          count( distinct( to_char( time::timestamptz, 'MM-DD' ) ) ) as days
+          count( distinct( to_char( time::timestamptz, 'YYYY-MM-DD' ) ) ) as days
         from
           hn_items_all
       EOQ
@@ -65,14 +65,14 @@ Home
     card {
       width = 2
       sql = <<EOQ
-        select to_char(min(time::timestamptz), 'MM-DD hHH24') as "oldest" from hn_items_all
+        select to_char(min(time::timestamptz), 'YYYY-MM-DD hHH24') as "oldest" from hn_items_all
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select to_char(max(time::timestamptz), 'MM-DD hHH24') as "newest" from hn_items_all
+        select to_char(max(time::timestamptz), 'YYYY-MM-DD hHH24') as "newest" from hn_items_all
       EOQ
     }
   }

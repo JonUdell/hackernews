@@ -106,7 +106,7 @@ query "submission_times" {
   sql = <<EOQ
     select
       id,
-      to_char(time::timestamptz, 'MM-DD hHH24') as time,
+      to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
       title,
       url,
       score,
@@ -128,8 +128,8 @@ query "submission_times" {
 query "submission_days" {
   sql = <<EOQ
     select
-      to_char(time::timestamptz, 'MM-DD') as day,
-      count(to_char(time::timestamptz, 'MM-DD'))
+      to_char(time::timestamptz, 'YY-MM-DD') as day,
+      count(to_char(time::timestamptz, 'YY-MM-DD'))
     from 
       hn_items_all
     where
@@ -194,7 +194,7 @@ query "domain_detail" {
   sql = <<EOQ
     with items_by_day as (
       select
-        to_char(time::timestamptz, 'MM-DD') as day,
+        to_char(time::timestamptz, 'YYYY-MM-DD') as day,
         substring(url from 'http[s]*://([^/$]+)') as domain
     from 
       hn_items_all
@@ -218,7 +218,7 @@ query "source_detail" {
   sql = <<EOQ
     select
       h.id as link,
-      to_char(h.time::timestamptz, 'MM-DD hHH24') as time,
+      to_char(h.time::timestamptz, 'YYYY-MM-DD hHH24') as time,
       h.score,
       h.title,
       h.url
@@ -305,7 +305,7 @@ query "posts" {
   sql = <<EOQ
     select 
       id as link,
-      to_char(time::timestamptz, 'MM-DD hHH24') as time,
+      to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
       title,
       by,
       score::int,
@@ -330,7 +330,7 @@ query "urls" {
   sql = <<EOQ
     select
       url,
-      to_char(time::timestamptz, 'MM-DD hHH24') as time,
+      to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
       sum(score::int) as score,
       sum(descendants::int) as comments
     from
@@ -361,7 +361,7 @@ query "stories_by_hour" {
     by_hour as (
       select
          regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'MM-DD hHH24') as hour,
+        to_char(time,'YYYY-MM-DD hHH24') as hour,
         count(*)
       from 
         data
@@ -392,7 +392,7 @@ query "ask_and_show_by_hour" {
     ask_hn_by_hour as (
       select
         regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'MM-DD hHH24') as hour,
+        to_char(time,'YYYY-MM-DD hHH24') as hour,
         count(*)
       from 
         ask_hn_data
@@ -420,7 +420,7 @@ query "ask_and_show_by_hour" {
     show_hn_by_hour as (
       select
         regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'MM-DD hHH24') as hour,
+        to_char(time,'YYYY-MM-DD hHH24') as hour,
         count(*)
       from 
         show_hn_data
