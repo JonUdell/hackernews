@@ -9,21 +9,21 @@ dashboard "Sources" {
     text {
       width = 6
       value = <<EOT
-[Home](http://${local.host}:9194/hackernews.dashboard.Home)
+[Home](http://${local.host}/hackernews.dashboard.Home)
 🞄
-[People](http://${local.host}:9194/hackernews.dashboard.People)
+[People](http://${local.host}/hackernews.dashboard.People)
 🞄
-[Posts](http://${local.host}:9194/hackernews.dashboard.Posts)
+[Posts](http://${local.host}/hackernews.dashboard.Posts)
 🞄
-[Repos](http://${local.host}:9194/hackernews.dashboard.Repos)
+[Repos](http://${local.host}/hackernews.dashboard.Repos)
 🞄
-[Search](http://${local.host}:9194/hackernews.dashboard.Search)
+[Search](http://${local.host}/hackernews.dashboard.Search)
 🞄
 Sources
 🞄
-[Submissions](http://${local.host}:9194/hackernews.dashboard.Submissions?input.hn_user=none)
+[Submissions](http://${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
 🞄
-[Urls](http://${local.host}:9194/hackernews.dashboard.Urls)
+[Urls](http://${local.host}/hackernews.dashboard.Urls)
       EOT
     }
 
@@ -34,7 +34,7 @@ Sources
     width = 6
     query = query.domains
     column "domain" {
-      href = "http://${local.host}:9194/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
+      href = "http://${local.host}/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
     }    
   }
 
@@ -71,9 +71,9 @@ Sources
           width = 6
           value = <<EOT
 Examples: 
-[www.nytimes.com](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
-[github.com](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=github.com),
-[simonwillison.net](http://${local.host}:9194/hackernews.dashboard.Sources?input.domain=simonwillison.net)
+[www.nytimes.com](http://${local.host}/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
+[github.com](http://${local.host}/hackernews.dashboard.Sources?input.domain=github.com),
+[simonwillison.net](http://${local.host}/hackernews.dashboard.Sources?input.domain=simonwillison.net)
         EOT
         }
 
