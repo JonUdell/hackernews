@@ -11,8 +11,6 @@ dashboard "Sources" {
       value = <<EOT
 [Home](http://${local.host}/hackernews.dashboard.Home)
 🞄
-[People](http://${local.host}/hackernews.dashboard.People)
-🞄
 [Posts](http://${local.host}/hackernews.dashboard.Posts)
 🞄
 [Repos](http://${local.host}/hackernews.dashboard.Repos)
