@@ -9,19 +9,19 @@ dashboard "Sources" {
     text {
       width = 6
       value = <<EOT
-[Home](http://${local.host}/hackernews.dashboard.Home)
+[Home](${local.host}/hackernews.dashboard.Home)
 🞄
-[Posts](http://${local.host}/hackernews.dashboard.Posts)
+[Posts](${local.host}/hackernews.dashboard.Posts)
 🞄
-[Repos](http://${local.host}/hackernews.dashboard.Repos)
+[Repos](${local.host}/hackernews.dashboard.Repos)
 🞄
-[Search](http://${local.host}/hackernews.dashboard.Search)
+[Search](${local.host}/hackernews.dashboard.Search)
 🞄
 Sources
 🞄
-[Submissions](http://${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
+[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
 🞄
-[Urls](http://${local.host}/hackernews.dashboard.Urls)
+[Urls](${local.host}/hackernews.dashboard.Urls)
       EOT
     }
 
@@ -32,7 +32,7 @@ Sources
     width = 6
     query = query.domains
     column "domain" {
-      href = "http://${local.host}/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
+      href = "${local.host}/hackernews.dashboard.Sources?input.domain={{.'domain'}}"
     }    
   }
 
@@ -69,9 +69,9 @@ Sources
           width = 6
           value = <<EOT
 Examples: 
-[www.nytimes.com](http://${local.host}/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
-[github.com](http://${local.host}/hackernews.dashboard.Sources?input.domain=github.com),
-[simonwillison.net](http://${local.host}/hackernews.dashboard.Sources?input.domain=simonwillison.net)
+[www.nytimes.com](${local.host}/hackernews.dashboard.Sources?input.domain=www.nytimes.com),
+[github.com](${local.host}/hackernews.dashboard.Sources?input.domain=github.com),
+[simonwillison.net](${local.host}/hackernews.dashboard.Sources?input.domain=simonwillison.net)
         EOT
         }
 
