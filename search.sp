@@ -11,8 +11,6 @@ dashboard "Search" {
       value = <<EOT
 [Home](${local.host}/hackernews.dashboard.Home)
 🞄
-[People](${local.host}/hackernews.dashboard.People)
-🞄
 [Posts](${local.host}/hackernews.dashboard.Posts)
 🞄
 [Repos](${local.host}/hackernews.dashboard.Repos)
@@ -61,7 +59,7 @@ Examples:
           id,
           by,
           title,
-          to_char(time::timestamptz, 'MM-DD hHH24') as time,
+          to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
           case 
             when url = '<null>' then ''
             else url

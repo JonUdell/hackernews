@@ -11,8 +11,6 @@ dashboard "Posts" {
       value = <<EOT
 [Home](${local.host}/hackernews.dashboard.Home)
 🞄
-[People](${local.host}/hackernews.dashboard.People)
-🞄
 Posts
 🞄
 [Repos](${local.host}/hackernews.dashboard.Repos)

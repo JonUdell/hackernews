@@ -11,8 +11,6 @@ dashboard "Urls" {
       value = <<EOT
 [Home](${local.host}/hackernews.dashboard.Home)
 🞄
-[People](${local.host}/hackernews.dashboard.People)
-🞄
 [Posts](${local.host}/hackernews.dashboard.Posts)
 🞄
 [Repos](${local.host}/hackernews.dashboard.Repos)
@@ -32,7 +30,7 @@ Urls
   container {
 
     table  {
-      width = 7
+      width = 8
       query = query.urls
       column "url" {
         wrap = "all"
@@ -40,7 +38,7 @@ Urls
     }
 
     container {
-      width = 5
+      width = 4
 
       chart  {
         title = "domains by count"    
