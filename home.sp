@@ -323,7 +323,7 @@ Home
         from
           hn_items_all
         where
-          time::timestamptz < now() - interval '7 days'
+          time::timestamptz > now() - interval '7 days'
         group by 
           by
         order by
@@ -343,7 +343,7 @@ Home
         from
           hn_items_all
         where
-          time::timestamptz < now() - interval '7 days'
+          time::timestamptz > now() - interval '7 days'
         group by
           by
         order by
