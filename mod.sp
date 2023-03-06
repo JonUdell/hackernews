@@ -3,8 +3,8 @@ mod "hackernews" {
 }
 
 locals {
-  host = "https://latestpipe.turbot.io/org/jon/workspace/hackernews/dashboard"
-  //host = "https://cloud.steampipe.io/org/acme/workspace/jon/dashboard"
+  //host = "https://latestpipe.turbot.io/org/jon/workspace/hackernews/dashboard"
+  host = "https://cloud.steampipe.io/org/acme/workspace/jon/dashboard"
   //host = "http://localhost:9194"
 }
 
