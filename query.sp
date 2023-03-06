@@ -250,7 +250,7 @@ query "people" {
         h.by,
         h.max_score,
         ( select count(*) from hn_items_all where by = h.by ) as stories,
-        ( select sum(descendants::int) from hn_items_all where descendants != '<null>' and by = h.by group by h.by ) as comments
+        ( select sum(descendants::int) from hn_items_all where descendants != 0 and by = h.by group by h.by ) as comments
       from 
         hn_users_and_max_scores h
       where
@@ -318,8 +318,8 @@ query "posts" {
     from
       hn_items_all
     where 
-      score != '<null>'
-      and descendants != '<null>'
+      score != 0
+      and descendants != 0
     order by 
       score desc
     limit 100
