@@ -4,28 +4,24 @@ dashboard "Sources" {
     service = "Hacker News"
   }
 
-  container {
+container {
     
     text {
-      width = 6
-      value = <<EOT
-[Home](${local.host}/hackernews.dashboard.Home)
-🞄
-[Posts](${local.host}/hackernews.dashboard.Posts)
-🞄
-[Repos](${local.host}/hackernews.dashboard.Repos)
-🞄
-[Search](${local.host}/hackernews.dashboard.Search)
-🞄
-Sources
-🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
-🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
-      EOT
+      width = 8
+      value = replace(
+        replace(
+          "${local.menu}",
+          "__HOST__",
+          "${local.host}"
+        ),
+        "[Sources](${local.host}/hackernews.dashboard.Sources)",
+        "Sources"
+      )
     }
 
-  }
+  }  
+
+
 
 
   table {
@@ -51,7 +47,7 @@ Sources
               select distinct
                 substring(url from 'http[s]*://([^/$]+)') as domain
               from
-                hn_items_all
+                hn
             )
             select
               domain as label,

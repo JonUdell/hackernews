@@ -12,7 +12,7 @@ query "repos_by_company" {
         descendants::int as comments,
         url
       from
-        hn_items_all
+        hn
       where
         url ~* 'github.com/'
     )
@@ -44,7 +44,7 @@ query "repo_counts_by_company" {
         descendants::int as comments,
         url
       from
-        hn_items_all
+        hn
       where
         url ~* 'github.com/'
     )
@@ -79,7 +79,7 @@ query "mentions" {
           select
             count(*)
           from
-            hn_items_all
+            hn
           where
             title ~* name
             and (extract(epoch from now() - time::timestamptz) / 60)::int between symmetric $2 and $3
@@ -111,11 +111,11 @@ query "submission_times" {
       url,
       score,
       case
-        when descendants = '<null>' then ''
+        when descendants is null then 0
         else descendants
       end as comments
     from 
-      hn_items_all
+      hn
     where
       by = $1
     order by
@@ -131,7 +131,7 @@ query "submission_days" {
       to_char(time::timestamptz, 'YY-MM-DD') as day,
       count(to_char(time::timestamptz, 'YY-MM-DD'))
     from 
-      hn_items_all
+      hn
     where
       by = $1
     group by 
@@ -149,16 +149,16 @@ query "domains" {
         url,
         substring(url from 'http[s]*://([^/$]+)') as domain
     from 
-      hn_items_all
+      hn
     where
-      url != '<null>'
+      url is not null
     ),
     avg_and_max as (
       select
         substring(url from 'http[s]*://([^/$]+)') as domain,
         max(score::int) as max_score
       from
-        hn_items_all
+        hn
       group by
         substring(url from 'http[s]*://([^/$]+)')
     ),
@@ -197,7 +197,7 @@ query "domain_detail" {
         to_char(time::timestamptz, 'YYYY-MM-DD') as day,
         substring(url from 'http[s]*://([^/$]+)') as domain
     from 
-      hn_items_all
+      hn
     where
       substring(url from 'http[s]*://([^/$]+)') = $1
     )
@@ -223,7 +223,7 @@ query "source_detail" {
       h.title,
       h.url
     from
-      hn_items_all h
+      hn h
     where 
       h.url ~ $1
     order by
@@ -239,7 +239,7 @@ query "people" {
         by,
         max(score::int) as max_score
       from
-        hn_items_all
+        hn
       group by
         by
       having
@@ -249,8 +249,8 @@ query "people" {
       select 
         h.by,
         h.max_score,
-        ( select count(*) from hn_items_all where by = h.by ) as stories,
-        ( select sum(descendants::int) from hn_items_all where descendants != '<null>' and by = h.by group by h.by ) as comments
+        ( select count(*) from hn where by = h.by ) as stories,
+        ( select sum(descendants::int) from hn where descendants is not null and by = h.by group by h.by ) as comments
       from 
         hn_users_and_max_scores h
       where
@@ -316,10 +316,10 @@ query "posts" {
         else substring(url from 'http[s]*://([^/$]+)')
       end as domain
     from
-      hn_items_all
+      hn
     where 
-      score != '<null>'
-      and descendants != '<null>'
+      score is not null
+      and descendants is not null
     order by 
       score desc
     limit 100
@@ -334,7 +334,7 @@ query "urls" {
       sum(score::int) as score,
       sum(descendants::int) as comments
     from
-      hn_items_all
+      hn
     where
       url != ''
     group by
@@ -354,7 +354,7 @@ query "stories_by_hour" {
       select
         time::timestamptz
       from
-        hn_items_all
+        hn
       where
         time::timestamptz > now() - interval '10 day'
     ),
@@ -384,7 +384,7 @@ query "ask_and_show_by_hour" {
       select
         time::timestamptz
       from
-        hn_items_all
+        hn
       where
         time::timestamptz > now() - interval '10 day'
         and title ~ '^Ask HN'
@@ -412,7 +412,7 @@ query "ask_and_show_by_hour" {
       select
         time::timestamptz
       from
-        hn_items_all
+        hn
       where
         time::timestamptz > now() - interval '10 day'
         and title ~ '^Show HN'
@@ -457,7 +457,7 @@ query "create_scores_and_comments" {
         score, 
         descendants 
       from 
-        hn_items_all 
+        hn 
       where 
         score::int > 5 
       order by
@@ -507,7 +507,7 @@ query "new_scores_and_comments" {
 query "update_scores_and_comments" {
   sql = <<EOQ
     update 
-      hn_items_all a 
+      hn a 
     set 
       score = new_sc.new_score, 
       descendants = new_sc.new_descendants 

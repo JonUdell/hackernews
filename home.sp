@@ -3,50 +3,44 @@ dashboard "Home" {
   tags = {
     service = "Hacker News"
   }
- 
-  container {
 
+  container {
+    
     text {
-      width = 6
-      value = <<EOT
-Home
-🞄
-[Posts](${local.host}/hackernews.dashboard.Posts)
-🞄
-[Repos](${local.host}/hackernews.dashboard.Repos)
-🞄
-[Search](${local.host}/hackernews.dashboard.Search)
-🞄
-[Sources](${local.host}/hackernews.dashboard.Sources)
-🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
-🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
-      EOT
+      width = 8
+      value = replace(
+        replace(
+          "${local.menu}",
+          "__HOST__",
+          "${local.host}"
+        ),
+        "[Home](${local.host}/hackernews.dashboard.Home)",
+        "Home"
+      )
     }
 
-  }
+  }  
 
   container {
 
     card {
       width = 2
       sql = <<EOQ
-        select count(*) as stories from hn_items_all
+        select count(*) as stories from hn
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select count(*) as "ask hn" from hn_items_all where title ~ '^Ask HN'
+        select count(*) as "ask hn" from hn where title ~ '^Ask HN'
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select count(*) as "show hn" from hn_items_all where title ~ '^Show HN'
+        select count(*) as "show hn" from hn where title ~ '^Show HN'
       EOQ
     }
 
@@ -56,21 +50,21 @@ Home
         select
           count( distinct( to_char( time::timestamptz, 'YYYY-MM-DD' ) ) ) as days
         from
-          hn_items_all
+          hn
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select to_char(min(time::timestamptz), 'YYYY-MM-DD hHH24') as "oldest" from hn_items_all
+        select to_char(min(time::timestamptz), 'YYYY-MM-DD hHH24') as "oldest" from hn
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select to_char(max(time::timestamptz), 'YYYY-MM-DD hHH24') as "newest" from hn_items_all
+        select to_char(max(time::timestamptz), 'YYYY-MM-DD hHH24') as "newest" from hn
       EOQ
     }
   }
@@ -80,14 +74,14 @@ Home
     card {
       width = 3
       sql = <<EOQ
-        select max(score::int) as "max score" from hn_items_all
+        select max(score::int) as "max score" from hn
       EOQ
     }
     
     card {
       width = 3
       sql = <<EOQ
-        select round(avg(score::int), 1) as "avg score" from hn_items_all
+        select round(avg(score::int), 1) as "avg score" from hn
 
       EOQ
     }
@@ -95,14 +89,14 @@ Home
     card {
       width = 3
       sql = <<EOQ
-        select round(avg(score::int), 1) as "avg ask score" from hn_items_all where title ~ '^Ask HN'
+        select round(avg(score::int), 1) as "avg ask score" from hn where title ~ '^Ask HN'
       EOQ
     }
 
     card {
       width = 3
       sql = <<EOQ
-        select round(avg(score::int), 1) as "avg show score" from hn_items_all where title ~ '^Show HN'
+        select round(avg(score::int), 1) as "avg show score" from hn where title ~ '^Show HN'
       EOQ
     }
 
@@ -321,7 +315,7 @@ Home
           by,
           sum(score::int) as sum_score
         from
-          hn_items_all
+          hn
         where
           time::timestamptz < now() - interval '7 days'
         group by 
@@ -341,7 +335,7 @@ Home
           by,
           sum(descendants::int) as comments
         from
-          hn_items_all
+          hn
         where
           time::timestamptz < now() - interval '7 days'
         group by

@@ -4,27 +4,22 @@ dashboard "Search" {
     service = "Hacker News"
   }
 
-  container {
+container {
     
     text {
-      width = 6
-      value = <<EOT
-[Home](${local.host}/hackernews.dashboard.Home)
-🞄
-[Posts](${local.host}/hackernews.dashboard.Posts)
-🞄
-[Repos](${local.host}/hackernews.dashboard.Repos)
-🞄
-Search 
-🞄
-[Sources](${local.host}/hackernews.dashboard.Sources)
-🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
-🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
-      EOT
-    } 
-  } 
+      width = 8
+      value = replace(
+        replace(
+          "${local.menu}",
+          "__HOST__",
+          "${local.host}"
+        ),
+        "[Search](${local.host}/hackernews.dashboard.Search)",
+        "Search"
+      )
+    }
+
+  }  
 
   container  {
 
@@ -61,13 +56,13 @@ Examples:
           title,
           to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
           case 
-            when url = '<null>' then ''
+            when url is null then ''
             else url
           end as url,
           score,
           descendants as comments
         from 
-          hn_items_all
+          hn
         where
            title ~* $1 or url ~* $1
         order by

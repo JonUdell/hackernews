@@ -3,8 +3,24 @@ mod "hackernews" {
 }
 
 locals {
-  host = "https://cloud.steampipe.io/org/acme/workspace/jon/dashboard"
-  //host = "http://localhost:9194"
+  //host = "https://cloud.steampipe.io/org/acme/workspace/jon/dashboard"
+  host = "http://localhost:9194"
+}
+
+locals {
+  menu = <<EOT
+[Home](__HOST__/hackernews.dashboard.Home)
+🞄
+[Posts](__HOST__/hackernews.dashboard.Posts)
+🞄
+[Search](__HOST__/hackernews.dashboard.Search)
+🞄
+[Sources](__HOST__/hackernews.dashboard.Sources)
+🞄
+[Submissions](__HOST__/hackernews.dashboard.Submissions?input.hn_user=none)
+🞄
+[Urls](__HOST__/hackernews.dashboard.Urls)
+EOT  
 }
 
 locals {

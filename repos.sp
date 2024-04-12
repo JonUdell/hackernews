@@ -4,28 +4,22 @@ dashboard "Repos" {
     service = "Hacker News"
   }
 
-  container {
+container {
     
     text {
-      width = 6
-      value = <<EOT
-[Home](${local.host}/hackernews.dashboard.Home)
-🞄
-[Posts](${local.host}/hackernews.dashboard.Posts)
-🞄
-Repos
-🞄
-[Search](${local.host}/hackernews.dashboard.Search)
-🞄
-[Sources](${local.host}/hackernews.dashboard.Sources)
-🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
-🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
-      EOT
-    } 
-  } 
+      width = 8
+      value = replace(
+        replace(
+          "${local.menu}",
+          "__HOST__",
+          "${local.host}"
+        ),
+        "[Repos](${local.host}/hackernews.dashboard.Repos)",
+        "Repos"
+      )
+    }
 
+  }  
 
   container  {
 

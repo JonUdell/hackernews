@@ -7,26 +7,19 @@ dashboard "Posts" {
   container {
     
     text {
-      width = 6
-      value = <<EOT
-[Home](${local.host}/hackernews.dashboard.Home)
-🞄
-Posts
-🞄
-[Repos](${local.host}/hackernews.dashboard.Repos)
-🞄
-[Search](${local.host}/hackernews.dashboard.Search)
-🞄
-[Sources](${local.host}/hackernews.dashboard.Sources)
-🞄
-[Submissions](${local.host}/hackernews.dashboard.Submissions?input.hn_user=none)
-🞄
-[Urls](${local.host}/hackernews.dashboard.Urls)
-
-      EOT
+      width = 8
+      value = replace(
+        replace(
+          "${local.menu}",
+          "__HOST__",
+          "${local.host}"
+        ),
+        "[Posts](${local.host}/hackernews.dashboard.Posts)",
+        "Posts"
+      )
     }
 
-  }
+  }  
 
   container {
 

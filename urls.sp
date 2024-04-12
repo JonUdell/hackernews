@@ -48,7 +48,7 @@ Urls
             substring(url from 'http[s]*://([^/$]+)') as domain,
             count(*)
           from
-            hn_items_all
+            hn
           where
             url != ''
           group by
@@ -68,7 +68,7 @@ Urls
             substring(url from 'http[s]*://([^/$]+)') as domain,
             max(score::int) as "max score"
           from
-            hn_items_all
+            hn
           where
             url != ''
           group by
