@@ -313,11 +313,11 @@ dashboard "Home" {
       sql = <<EOQ
         select
           by,
-          sum(score::int) as sum_score
+          sum(score) as sum_score
         from
           hn
         where
-          time::timestamptz < now() - interval '7 days'
+          time >= now() - interval '7 days'
         group by 
           by
         order by
@@ -333,15 +333,17 @@ dashboard "Home" {
       sql = <<EOQ
         select
           by,
-          sum(descendants::int) as comments
+          sum(descendants) as comments
         from
           hn
         where
-          time::timestamptz < now() - interval '7 days'
+          time >= now() - interval '7 days'
+          and descendants > 0
         group by
-          by
+          by,
+          descendants
         order by
-          comments desc
+          descendants desc
         limit
           15
       EOQ
