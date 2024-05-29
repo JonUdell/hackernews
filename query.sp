@@ -318,13 +318,8 @@ query "posts" {
     from
       hn
     where 
-<<<<<<< HEAD
-      score is not null
-      and descendants is not null
-=======
       score != 0
       and descendants != 0
->>>>>>> f6331b726edcd8571e52d13c5507c0d0cbd02846
     order by 
       score desc
     limit 100
