@@ -105,14 +105,14 @@ FROM
     card {
       width = 3
       sql = <<EOQ
-        select round(avg(score::int), 1) as "avg ask score" from hn where title ~ '^Ask HN'
+        select round(avg(score::int), 1) as "avg ask score" from hn where REGEXP_MATCHES(title, '^Ask HN')
       EOQ
     }
 
     card {
       width = 3
       sql = <<EOQ
-        select round(avg(score::int), 1) as "avg show score" from hn where title ~ '^Show HN'
+        select round(avg(score::int), 1) as "avg show score" from hn where   REGEXP_MATCHES(title, '^Show HN')
       EOQ
     }
 
@@ -120,13 +120,14 @@ FROM
 
   container {
 
+
     chart {
       base = chart.companies_base
       width = 4
       type = "donut"
       title = "company mentions: last 24 hours"
       query = query.mentions
-      args = [ local.joined_languages, 1440, 0 ]
+      args = [ local.joined_companies, 0, 1440 ]
     }
 
     chart {
@@ -135,7 +136,7 @@ FROM
       type = "donut"
       title = "company mentions: last 7 days"
       query = query.mentions
-      args = [ local.companies, 10080, 0 ]
+      args = [ local.joined_companies, 0, 10080 ]
     }
 
     chart {
@@ -144,7 +145,7 @@ FROM
       type = "donut"
       title = "company mentions: last 30 days"
       query = query.mentions
-      args = [ local.companies, 43200, 0 ] 
+      args = [ local.joined_companies, 0, 43200 ] 
     }
 
   }
@@ -157,7 +158,7 @@ FROM
       type = "donut"
       title = "language mentions: last 24 hours"
       query = query.mentions
-      args = [ local.languages, 1440, 0 ]
+      args = [ local.joined_languages, 0, 1440 ]
     }
 
     chart {
@@ -166,7 +167,7 @@ FROM
       type = "donut"
       title = "language mentions: last 7 days"
       query = query.mentions
-      args = [ local.languages, 10080, 0 ]
+      args = [ local.joined_languages, 0, 10080 ]
     }
 
     chart {
@@ -175,7 +176,7 @@ FROM
       type = "donut"
       title = "language mentions: last 30 days"
       query = query.mentions
-      args = [ local.languages, 43200, 0 ]
+      args = [ local.joined_languages, 0, 43200 ]
     }
 
   }
@@ -188,7 +189,7 @@ FROM
       type = "donut"
       title = "os mentions: last 24 hours"
       query = query.mentions
-      args = [ local.operating_systems, 1440, 0 ]
+      args = [ local.joined_operating_systems, 0, 1440 ]
     }
 
     chart { 
@@ -197,7 +198,7 @@ FROM
       type = "donut"
       title = "os mentions: last 7 days"
       query = query.mentions
-      args = [ local.operating_systems, 10080, 0 ]
+      args = [ local.joined_operating_systems, 0, 10080 ]
     }
 
     chart {
@@ -206,7 +207,7 @@ FROM
       type = "donut"
       title = "os mentions: last 30 days"
       query = query.mentions
-      args = [ local.operating_systems, 43200, 0 ]
+      args = [ local.joined_operating_systems, 0, 43200 ]
     }
 
   }
@@ -219,7 +220,7 @@ FROM
       type = "donut"
       title = "cloud mentions: last 24 hours"
       query = query.mentions
-      args = [ local.clouds, 1440, 0 ]
+      args = [ local.joined_clouds, 0, 1440 ]
     }
 
     chart {
@@ -228,7 +229,7 @@ FROM
       type = "donut"
       title = "cloud mentions: last 7 days"
       query = query.mentions
-      args = [ local.clouds, 10080, 0 ]
+      args = [ local.joined_clouds, 0, 10080 ]
     }
 
     chart {
@@ -237,7 +238,7 @@ FROM
       type = "donut"
       title = "cloud mentions: last 30 days"
       query = query.mentions
-      args = [ local.clouds, 43200, 0 ] 
+      args = [ local.joined_clouds, 0, 43200 ] 
     }
 
   }
@@ -250,7 +251,7 @@ FROM
       type = "donut"
       title = "db mentions: last 24 hours"
       query = query.mentions
-      args = [ local.dbs, 1440, 0 ]
+      args = [ local.joined_dbs, 0, 1440 ]
     }
 
     chart {
@@ -259,7 +260,7 @@ FROM
       type = "donut"
       title = "db mentions: last 7 days"
       query = query.mentions
-      args = [ local.dbs, 10080, 0 ]
+      args = [ local.joined_dbs, 0, 10080 ]
     }
 
     chart {
@@ -268,7 +269,7 @@ FROM
       type = "donut"
       title = "db mentions: last 30 days"
       query = query.mentions
-      args = [ local.dbs, 43200, 0 ] 
+      args = [ local.joined_dbs, 0, 43200 ] 
     }
 
   }
@@ -281,7 +282,7 @@ FROM
       type = "donut"
       title = "editor mentions: last 24 hours"
       query = query.mentions
-      args = [ local.editors, 1440, 0 ]
+      args = [ local.joined_editors, 0, 1440 ]
     }
 
     chart {
@@ -290,7 +291,7 @@ FROM
       type = "donut"
       title = "editor mentions: last 7 days"
       query = query.mentions
-      args = [ local.editors, 10080, 0 ]
+      args = [ local.joined_editors, 0, 10080 ]
     }
 
     chart {
@@ -299,7 +300,7 @@ FROM
       type = "donut"
       title = "editor mentions: last 30 days"
       query = query.mentions
-      args = [ local.editors, 43200, 0 ] 
+      args = [ local.joined_editors, 0, 43200 ] 
     }
 
   }    

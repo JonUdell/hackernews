@@ -90,6 +90,7 @@ locals {
 
   dbs = [
     "DB2",
+    "DuckDB",
     "ClickHouse",
     "Citus",
     "CouchDB",
@@ -117,7 +118,12 @@ locals {
 }
 
 locals {
+  joined_companies = join(",", local.companies)
   joined_languages = join(",", local.languages)
+  joined_operating_systems = join(",", local.operating_systems)
+  joined_clouds = join(",", local.clouds)
+  joined_dbs = join(",", local.dbs)
+  joined_editors = join(",", local.editors)
 }
 
 # https://steampipe.io/docs/reference/mod-resources/dashboard#color
@@ -302,6 +308,9 @@ chart "db_base" {
     }
     point "ClickHouse" {
       color = "#E9C84C"
+    }
+    point "DuckDB" {
+      color = "#fff100"
     }
     point "Citus" {
       color = "green"

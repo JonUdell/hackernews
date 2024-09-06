@@ -81,9 +81,8 @@ counts as (
       from
         hn
       where
-        regexp_matches(title, name, 'i')
-        -- Cast both current_timestamp and time to TIMESTAMP for subtraction
-        and (extract(epoch from current_timestamp::timestamp - time::timestamp) / 60) between ? and ?
+        regexp_matches(title, name, 'i')  -- Match the company name in the title
+        and (extract(epoch from CURRENT_TIMESTAMP::timestamp - time::timestamp) / 60) between ? and ?
     ) as mentions
   from
     names
@@ -97,9 +96,6 @@ where
   mentions > 0
 order by 
   mentions desc;
-
-
-
 
   EOQ
   param "names" {}
