@@ -3,8 +3,8 @@ mod "hackernews" {
 }
 
 locals {
-  host = "https://pipes.turbot.com/org/turbot-ops/workspace/stats/dashboard"
-  //host = "http://localhost:9033"
+  //host = "https://pipes.turbot.com/org/turbot-ops/workspace/stats/dashboard"
+  host = "http://localhost:9033"
 }
 
 locals {

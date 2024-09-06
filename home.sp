@@ -33,38 +33,54 @@ dashboard "Home" {
     card {
       width = 2
       sql = <<EOQ
-        select count(*) as "ask hn" from hn where title ~ '^Ask HN'
+SELECT
+  COUNT(*) AS "ask hn"
+FROM
+  hn
+WHERE
+  REGEXP_MATCHES(title, '^Ask HN')
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select count(*) as "show hn" from hn where title ~ '^Show HN'
+SELECT
+  COUNT(*) AS "show hn"
+FROM
+  hn
+WHERE
+  REGEXP_MATCHES(title, '^Show HN')
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select
-          count( distinct( to_char( time::timestamptz, 'YYYY-MM-DD' ) ) ) as days
-        from
-          hn
+SELECT
+  COUNT(DISTINCT(STRFTIME(time::TIMESTAMP, '%Y-%m-%d'))) AS days
+FROM
+  hn
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select to_char(min(time::timestamptz), 'YYYY-MM-DD hHH24') as "oldest" from hn
+SELECT
+  STRFTIME(MIN(time::TIMESTAMP), '%Y-%m-%d %H') AS "oldest"
+FROM
+  hn
       EOQ
     }
 
     card {
       width = 2
       sql = <<EOQ
-        select to_char(max(time::timestamptz), 'YYYY-MM-DD hHH24') as "newest" from hn
+SELECT
+  STRFTIME(max(time::TIMESTAMP), '%Y-%m-%d %H') AS "newest"
+FROM
+  hn
       EOQ
     }
   }
