@@ -126,7 +126,7 @@ FROM
       type = "donut"
       title = "company mentions: last 24 hours"
       query = query.mentions
-      args = [ local.companies, 1440, 0 ]
+      args = [ local.joined_languages, 1440, 0 ]
     }
 
     chart {

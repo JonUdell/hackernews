@@ -24,7 +24,7 @@ EOT
 }
 
 locals {
-  companies = [ 
+  companies = [
     "Amazon",
     "AMD",
     "Apple",
@@ -73,7 +73,7 @@ locals {
     "XML"
   ]
 
-  operating_systems = [
+ operating_systems = [
     "Android",
     "iOS",
     "Linux",
@@ -114,6 +114,10 @@ locals {
   ]
 
 
+}
+
+locals {
+  joined_languages = join(",", local.languages)
 }
 
 # https://steampipe.io/docs/reference/mod-resources/dashboard#color
@@ -186,7 +190,7 @@ chart "companies_base" {
     point "Stripe" {
       color = "SaddleBrown"
     }
-  }  
+  }
 }
 
 chart "languages_base" {
