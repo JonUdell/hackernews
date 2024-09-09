@@ -245,6 +245,7 @@ FROM
 
   container {
 
+/*
     chart {
       base = chart.db_base
       width = 4
@@ -253,6 +254,7 @@ FROM
       query = query.mentions
       args = [ local.joined_dbs, 0, 1440 ]
     }
+*/    
 
     chart {
       base = chart.db_base
@@ -270,6 +272,15 @@ FROM
       title = "db mentions: last 30 days"
       query = query.mentions
       args = [ local.joined_dbs, 0, 43200 ] 
+    }
+
+    chart {
+      base = chart.db_base
+      width = 4
+      type = "donut"
+      title = "db mentions: last 90 days"
+      query = query.mentions
+      args = [ local.joined_dbs, 0, 129600 ]
     }
 
   }
@@ -306,6 +317,8 @@ FROM
   }    
 
 
+  /*
+
   container {
 
     chart {
@@ -319,7 +332,7 @@ FROM
       query = query.ask_and_show_by_hour
     }
 
-  }  
+  } 
 
   container {
     width = 12
@@ -367,6 +380,7 @@ FROM
     }
 
   }
+  */
 
 
 }
