@@ -178,6 +178,9 @@ chart "companies_base" {
     point "Twitter" {
       color = "PaleTurquoise"
     }
+    point "TypeScript" {
+      color = "#C6BF31"
+    }
     point "Uber" {
       color = "Black"
     }
