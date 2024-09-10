@@ -133,9 +133,6 @@ chart "companies_base" {
     point "CloudFlare" {
       color = "Brown"
     }
-    point "DuckDB" {
-      color = "#fff100"
-    }
     point "Facebook" {
       color = "RoyalBlue"
     }
@@ -177,9 +174,6 @@ chart "companies_base" {
     }
     point "Twitter" {
       color = "PaleTurquoise"
-    }
-    point "TypeScript" {
-      color = "#C6BF31"
     }
     point "Uber" {
       color = "Black"
@@ -250,7 +244,7 @@ chart "languages_base" {
       color = "#F05138"
     }
     point "TypeScript" {
-      color = "white"
+      color = "#C6BF31"
     }
     point "WebAssembly|WASM" {
       color = "#6856E7"
@@ -308,6 +302,9 @@ chart "db_base" {
     }
     point "Citus" {
       color = "green"
+    }
+    point "DuckDB" {
+      color = "#fff100"
     }
     point "MongoDB" {
       color = "gray"
