@@ -24,7 +24,7 @@ EOT
 }
 
 locals {
-  companies = [ 
+  companies = [
     "Amazon",
     "AMD",
     "Apple",
@@ -93,6 +93,7 @@ locals {
     "ClickHouse",
     "Citus",
     "CouchDB",
+    "DuckDB",
     "MongoDB",
     "MySQL|MariaDB",
     "Oracle",
@@ -131,6 +132,9 @@ chart "companies_base" {
     }
     point "CloudFlare" {
       color = "Brown"
+    }
+    point "DuckDB" {
+      color = "#fff100"
     }
     point "Facebook" {
       color = "RoyalBlue"
@@ -186,7 +190,7 @@ chart "companies_base" {
     point "Stripe" {
       color = "SaddleBrown"
     }
-  }  
+  }
 }
 
 chart "languages_base" {
