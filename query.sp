@@ -1,3 +1,4 @@
+
 query "repos_by_company" {
   sql = <<EOQ
     with names as (
@@ -68,23 +69,18 @@ query "repo_counts_by_company" {
 
 query "mentions" {
   sql = <<EOQ
-WITH RECURSIVE split(name, rest) AS (
-  SELECT 
-    substr(?, 1, instr(?, ',') - 1) AS name,
-    substr(?, instr(?, ',') + 1) AS rest
+WITH RECURSIVE names(name, remaining) AS (
+  SELECT
+    '',
+    ? || ','
   UNION ALL
-  SELECT 
-    substr(rest, 1, instr(rest, ',') - 1),
-    substr(rest, instr(rest, ',') + 1)
-  FROM split
-  WHERE rest != ''
-  AND instr(rest, ',') > 0
-  UNION ALL
-  SELECT 
-    rest AS name,
-    '' AS rest
-  FROM split
-  WHERE instr(rest, ',') = 0
+  SELECT
+    substr(remaining, 1, instr(remaining, ',') - 1),
+    substr(remaining, instr(remaining, ',') + 1)
+  FROM
+    names
+  WHERE
+    remaining != ''
 ),
 counts AS (
   SELECT
@@ -95,10 +91,14 @@ counts AS (
       FROM
         hn
       WHERE
-        title LIKE '%' || name || '%'  -- Simple pattern match
-        AND (julianday('now') - julianday(time)) * 1440 BETWEEN ? AND ?
+        title LIKE '%' || name || '%'
+        and (julianday('now') - julianday(datetime(substr(time, 1, 19)))) * 24 * 60 BETWEEN ? AND ?
+        and time is not null
     ) AS mentions
-  FROM split
+  FROM
+    names
+  WHERE
+    name != '' -- Exclude empty names
 )
 SELECT
   replace(name, '\', '') AS name,
