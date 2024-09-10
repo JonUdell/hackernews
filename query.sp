@@ -68,34 +68,48 @@ query "repo_counts_by_company" {
 
 query "mentions" {
   sql = <<EOQ
-    with names as (
-      select
-        unnest( $1::text[] ) as name
-    ),
-    counts as (
-      select
-        name,
-        (
-          select
-            count(*)
-          from
-            hn
-          where
-            title ~* name
-            and (extract(epoch from now() - time::timestamptz) / 60)::int between symmetric $2 and $3
-        ) as mentions
-        from
-          names
-    )
-    select
-      replace(name, '\', '') as name,
-      mentions
-    from
-      counts
-    where
-      mentions > 0
-    order by 
-      mentions desc
+WITH RECURSIVE split(name, rest) AS (
+  SELECT 
+    substr(?, 1, instr(?, ',') - 1) AS name,
+    substr(?, instr(?, ',') + 1) AS rest
+  UNION ALL
+  SELECT 
+    substr(rest, 1, instr(rest, ',') - 1),
+    substr(rest, instr(rest, ',') + 1)
+  FROM split
+  WHERE rest != ''
+  AND instr(rest, ',') > 0
+  UNION ALL
+  SELECT 
+    rest AS name,
+    '' AS rest
+  FROM split
+  WHERE instr(rest, ',') = 0
+),
+counts AS (
+  SELECT
+    name,
+    (
+      SELECT
+        count(*)
+      FROM
+        hn
+      WHERE
+        title LIKE '%' || name || '%'  -- Simple pattern match
+        AND (julianday('now') - julianday(time)) * 1440 BETWEEN ? AND ?
+    ) AS mentions
+  FROM split
+)
+SELECT
+  replace(name, '\', '') AS name,
+  mentions
+FROM
+  counts
+WHERE
+  mentions > 0
+ORDER BY 
+  mentions DESC;
+
   EOQ
   param "names" {}
   param "min_minutes_ago" {}
