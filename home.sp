@@ -298,7 +298,6 @@ FROM
 
   }
 
-/*
   container {
 
     chart {
@@ -321,19 +320,19 @@ FROM
       title = "users by total score: last 7 days"
       width = 6
       sql   = <<EOQ
-        select
+        SELECT
           by,
-          sum(score) as sum_score
-        from
+          SUM(score) AS sum_score
+        FROM
           hn
-        where
-          time >= now() - interval '7 days'
-        group by 
+        WHERE
+          time >= datetime('now', '-7 days')
+        GROUP BY
           by
-        order by
-          sum_score desc
-        limit 
-          15
+        ORDER BY
+          sum_score DESC
+        LIMIT
+          15;
       EOQ
     }
 
@@ -341,26 +340,24 @@ FROM
       title = "users by total comments: last 7 days"
       width = 6
       sql   = <<EOQ
-        select
-          by,
-          sum(descendants) as comments
-        from
-          hn
-        where
-          time >= now() - interval '7 days'
-          and descendants > 0
-        group by
-          by,
-          descendants
-        order by
-          descendants desc
-        limit
-          15
+        SELECT
+            by,
+            CAST(SUM(descendants) AS INTEGER) AS comments
+        FROM
+            hn
+        WHERE
+            time >= strftime('%Y-%m-%d %H:%M:%S', 'now', '-7 days')
+            AND descendants > 0
+        GROUP BY
+            by
+        ORDER BY
+            comments DESC
+        LIMIT
+            15
       EOQ
     }
 
   }
-*/
 
 }
 

@@ -364,102 +364,94 @@ query "urls" {
 
 query "stories_by_hour" {
   sql = <<EOQ
-    with data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-    ),
-    by_hour as (
-      select
-         regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        data
-      group by
-        day_hour, hour
-    )
-    select
-      day_hour,
-      count
-    from
-      by_hour
-    order by
-      hour
+  WITH data AS (
+    SELECT
+      substr(time, 1, 19) AS time_without_tz
+    FROM
+      hn
+    WHERE
+      time > datetime('now', '-10 days')
+  ),
+  by_hour AS (
+    SELECT
+      strftime('%w', time_without_tz) AS day_of_week,
+      strftime('%d', time_without_tz) AS day_of_month,
+      strftime('%H', time_without_tz) AS hour_of_day,
+      strftime('%Y-%m-%d %H', time_without_tz) AS hour,
+      COUNT(*) AS count
+    FROM 
+      data
+    GROUP BY
+      day_of_week, day_of_month, hour_of_day, hour
+  )
+  SELECT
+    CASE day_of_week
+      WHEN '0' THEN 'Sun'
+      WHEN '1' THEN 'Mon'
+      WHEN '2' THEN 'Tue'
+      WHEN '3' THEN 'Wed'
+      WHEN '4' THEN 'Thu'
+      WHEN '5' THEN 'Fri'
+      WHEN '6' THEN 'Sat'
+    END || ' ' || day_of_month || ' ' || hour_of_day AS day_hour,
+    count,
+    hour
+  FROM
+    by_hour
+  ORDER BY
+    hour
   EOQ
 }
 
 query "ask_and_show_by_hour" {
   sql = <<EOQ
-    with ask_hn_data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-        and title ~ '^Ask HN'
-    ),
-    ask_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        ask_hn_data
-      group by
-        day_hour, hour
-      order by
-        hour
-    ),
-    ask_hn as (
-      select
-        day_hour,
-        count as ask_count
-      from
-        ask_hn_by_hour
-    ),
-    show_hn_data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-        and title ~ '^Show HN'
-    ),
-    show_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        show_hn_data
-      group by
-        day_hour, hour
-      order by
-        hour
-    ),
-    show_hn as (
-      select
-        day_hour,
-        count as show_count
-      from
-        show_hn_by_hour
-    )
-    select
-      day_hour,
-      ask_count as "Ask HN",
-      show_count as "Show HN"
-    from 
-      ask_hn a
-    left join 
-      show_hn s 
-    using 
-      (day_hour)
+WITH data AS (
+  SELECT
+    substr(time, 1, 19) AS time_without_tz,
+    CASE 
+      WHEN title LIKE 'Ask HN:%' THEN 'Ask HN'
+      WHEN title LIKE 'Show HN:%' THEN 'Show HN'
+      ELSE 'Other'
+    END AS post_type
+  FROM
+    hn
+  WHERE
+    time > datetime('now', '-10 days')
+    AND (title LIKE 'Ask HN:%' OR title LIKE 'Show HN:%')
+),
+by_hour AS (
+  SELECT
+    time_without_tz,
+    strftime('%w', time_without_tz) AS day_of_week,
+    strftime('%d', time_without_tz) AS day_of_month,
+    strftime('%H', time_without_tz) AS hour_of_day,
+    post_type,
+    COUNT(*) AS count
+  FROM 
+    data
+  GROUP BY
+    time_without_tz, day_of_week, day_of_month, hour_of_day, post_type
+)
+SELECT
+  CASE day_of_week
+    WHEN '0' THEN 'Su'
+    WHEN '1' THEN 'M'
+    WHEN '2' THEN 'Tu'
+    WHEN '3' THEN 'W'
+    WHEN '4' THEN 'Th'
+    WHEN '5' THEN 'F'
+    WHEN '6' THEN 'Sa'
+  END || ' ' || 
+  substr('0' || day_of_month, -2) || ' ' || 
+  substr('0' || hour_of_day, -2) AS day_hour,
+  SUM(CASE WHEN post_type = 'Ask HN' THEN count ELSE 0 END) AS "Ask HN",
+  SUM(CASE WHEN post_type = 'Show HN' THEN count ELSE 0 END) AS "Show HN"
+FROM
+  by_hour
+GROUP BY
+  time_without_tz
+ORDER BY
+  time_without_tz
   EOQ
 }
 
