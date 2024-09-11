@@ -377,7 +377,7 @@ query "stories_by_hour" {
   EOQ
 }
 
-query "ask_and_show_by_hour" {
+query "ask_and_show_by_day" {
   sql = <<EOQ
     with ask_hn as (
       select
