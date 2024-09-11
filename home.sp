@@ -298,7 +298,7 @@ dashboard "Home" {
     }
     chart {
       width = 6
-      title = "ask and show by hour: last 10 days"
+      title = "ask and show by day: last 30 days"
       query = query.ask_and_show_by_hour
     }
 

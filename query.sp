@@ -360,84 +360,55 @@ query "stories_by_hour" {
     ),
     by_hour as (
       select
-         regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
+        to_char(time,'MM-DD hHH24') as month_hour,
         count(*)
       from 
         data
       group by
-        day_hour, hour
+        month_hour
     )
     select
-      day_hour,
+      month_hour,
       count
     from
       by_hour
     order by
-      hour
+      month_hour
   EOQ
 }
 
 query "ask_and_show_by_hour" {
   sql = <<EOQ
-    with ask_hn_data as (
+    with ask_hn as (
       select
-        time::timestamptz
+        date(time) as day,
+        count(*) as ask_count
       from
         hn
       where
-        time::timestamptz > now() - interval '10 day'
+        time > now() - interval '30 day'
         and title ~ '^Ask HN'
-    ),
-    ask_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        ask_hn_data
       group by
-        day_hour, hour
+        day
       order by
-        hour
-    ),
-    ask_hn as (
-      select
-        day_hour,
-        count as ask_count
-      from
-        ask_hn_by_hour
-    ),
-    show_hn_data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-        and title ~ '^Show HN'
-    ),
-    show_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        show_hn_data
-      group by
-        day_hour, hour
-      order by
-        hour
+        day
     ),
     show_hn as (
       select
-        day_hour,
-        count as show_count
+        date(time) as day,
+        count(*) as show_count
       from
-        show_hn_by_hour
+        hn
+      where
+        time > now() - interval '30 day'
+        and title ~ '^Show HN'
+      group by
+        day
+      order by
+        day
     )
     select
-      day_hour,
+      day,
       ask_count as "Ask HN",
       show_count as "Show HN"
     from 
@@ -445,7 +416,7 @@ query "ask_and_show_by_hour" {
     left join 
       show_hn s 
     using 
-      (day_hour)
+      (day)
   EOQ
 }
 
