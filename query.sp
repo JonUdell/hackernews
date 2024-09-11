@@ -382,44 +382,46 @@ order by
 
 query "ask_and_show_by_day" {
   sql = <<EOQ
-   WITH ask_hn AS (
-  SELECT
-    DATE(time) AS day,
-    COUNT(*) AS ask_count
-  FROM
+with ask_hn as (
+  select
+    date_trunc('day', cast(time as timestamp)) as day,
+    count(*) as ask_count
+  from
     hn
-  WHERE
-    time > CURRENT_DATE - INTERVAL 30 DAY
-    AND title LIKE 'Ask HN%'
-  GROUP BY
+  where
+    cast(time as timestamp) > cast(now() as timestamp) - interval '30' day
+    and regexp_matches(title, '^Ask HN')
+  group by
     day
-  ORDER BY
+  order by
     day
 ),
-show_hn AS (
-  SELECT
-    DATE(time) AS day,
-    COUNT(*) AS show_count
-  FROM
+show_hn as (
+  select
+    date_trunc('day', cast(time as timestamp)) as day,
+    count(*) as show_count
+  from
     hn
-  WHERE
-    time > CURRENT_DATE - INTERVAL 30 DAY
-    AND title LIKE 'Show HN%'
-  GROUP BY
+  where
+    cast(time as timestamp) > cast(now() as timestamp) - interval '30' day
+    and regexp_matches(title, '^Show HN')
+  group by
     day
-  ORDER BY
+  order by
     day
 )
-SELECT
-  day,
-  ask_count AS "Ask HN",
-  show_count AS "Show HN"
-FROM 
+select
+  a.day,
+  ask_count as "Ask HN",
+  show_count as "Show HN"
+from 
   ask_hn a
-LEFT JOIN 
+left join 
   show_hn s 
-USING 
-  (day)
+using 
+  (day);
+
+
   EOQ
 }
 
