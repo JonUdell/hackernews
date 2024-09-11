@@ -351,102 +351,75 @@ query "urls" {
 
 query "stories_by_hour" {
   sql = <<EOQ
-    with data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-    ),
-    by_hour as (
-      select
-         regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        data
-      group by
-        day_hour, hour
-    )
-    select
-      day_hour,
-      count
-    from
-      by_hour
-    order by
-      hour
+with data as (
+  select
+    cast(time as timestamp) as time
+  from
+    hn
+  where
+    cast(time as timestamp) > cast(now() as timestamp) - interval '10 day'
+),
+by_hour as (
+  select
+    strftime(cast(time as timestamp), '%m-%d %H') as month_hour,
+    count(*) as count
+  from 
+    data
+  group by
+    month_hour
+)
+select
+  month_hour,
+  count
+from
+  by_hour
+order by
+  month_hour
+
+
   EOQ
 }
 
-query "ask_and_show_by_hour" {
+query "ask_and_show_by_day" {
   sql = <<EOQ
-    with ask_hn_data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-        and title ~ '^Ask HN'
-    ),
-    ask_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        ask_hn_data
-      group by
-        day_hour, hour
-      order by
-        hour
-    ),
-    ask_hn as (
-      select
-        day_hour,
-        count as ask_count
-      from
-        ask_hn_by_hour
-    ),
-    show_hn_data as (
-      select
-        time::timestamptz
-      from
-        hn
-      where
-        time::timestamptz > now() - interval '10 day'
-        and title ~ '^Show HN'
-    ),
-    show_hn_by_hour as (
-      select
-        regexp_replace(to_char(time, 'Dy DD HH24'), '(\w)(\w{2,2})(.+)', '\1\3') as day_hour,
-        to_char(time,'YYYY-MM-DD hHH24') as hour,
-        count(*)
-      from 
-        show_hn_data
-      group by
-        day_hour, hour
-      order by
-        hour
-    ),
-    show_hn as (
-      select
-        day_hour,
-        count as show_count
-      from
-        show_hn_by_hour
-    )
-    select
-      day_hour,
-      ask_count as "Ask HN",
-      show_count as "Show HN"
-    from 
-      ask_hn a
-    left join 
-      show_hn s 
-    using 
-      (day_hour)
+   WITH ask_hn AS (
+  SELECT
+    DATE(time) AS day,
+    COUNT(*) AS ask_count
+  FROM
+    hn
+  WHERE
+    time > CURRENT_DATE - INTERVAL 30 DAY
+    AND title LIKE 'Ask HN%'
+  GROUP BY
+    day
+  ORDER BY
+    day
+),
+show_hn AS (
+  SELECT
+    DATE(time) AS day,
+    COUNT(*) AS show_count
+  FROM
+    hn
+  WHERE
+    time > CURRENT_DATE - INTERVAL 30 DAY
+    AND title LIKE 'Show HN%'
+  GROUP BY
+    day
+  ORDER BY
+    day
+)
+SELECT
+  day,
+  ask_count AS "Ask HN",
+  show_count AS "Show HN"
+FROM 
+  ask_hn a
+LEFT JOIN 
+  show_hn s 
+USING 
+  (day)
   EOQ
 }
 

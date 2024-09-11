@@ -317,8 +317,6 @@ FROM
   }    
 
 
-  /*
-
   container {
 
     chart {
@@ -328,8 +326,8 @@ FROM
     }
     chart {
       width = 6
-      title = "ask and show by hour: last 10 days"
-      query = query.ask_and_show_by_hour
+      title = "ask and show by day: last 30 days"
+      query = query.ask_and_show_by_day
     }
 
   } 
@@ -347,13 +345,14 @@ FROM
         from
           hn
         where
-          time >= now() - interval '7 days'
-        group by 
+          time >= cast(now() as timestamp) - interval '7 days'
+        group by
           by
         order by
           sum_score desc
-        limit 
+        limit
           15
+
       EOQ
     }
     
@@ -367,7 +366,7 @@ FROM
         from
           hn
         where
-          time >= now() - interval '7 days'
+          time >= cast(now() as timestamp) - interval '7 days'
           and descendants > 0
         group by
           by,
@@ -380,7 +379,6 @@ FROM
     }
 
   }
-  */
 
 
 }
