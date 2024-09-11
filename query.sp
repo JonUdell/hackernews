@@ -364,94 +364,75 @@ query "urls" {
 
 query "stories_by_hour" {
   sql = <<EOQ
-  WITH data AS (
-    SELECT
-      substr(time, 1, 19) AS time_without_tz
-    FROM
-      hn
-    WHERE
-      time > datetime('now', '-10 days')
-  ),
-  by_hour AS (
-    SELECT
-      strftime('%w', time_without_tz) AS day_of_week,
-      strftime('%d', time_without_tz) AS day_of_month,
-      strftime('%H', time_without_tz) AS hour_of_day,
-      strftime('%Y-%m-%d %H', time_without_tz) AS hour,
-      COUNT(*) AS count
-    FROM 
-      data
-    GROUP BY
-      day_of_week, day_of_month, hour_of_day, hour
-  )
-  SELECT
-    CASE day_of_week
-      WHEN '0' THEN 'Sun'
-      WHEN '1' THEN 'Mon'
-      WHEN '2' THEN 'Tue'
-      WHEN '3' THEN 'Wed'
-      WHEN '4' THEN 'Thu'
-      WHEN '5' THEN 'Fri'
-      WHEN '6' THEN 'Sat'
-    END || ' ' || day_of_month || ' ' || hour_of_day AS day_hour,
-    count,
-    hour
-  FROM
-    by_hour
-  ORDER BY
-    hour
+with data as (
+  select
+    datetime(substr(time, 1, 19)) as time
+  from
+    hn
+  where
+    datetime(substr(time, 1, 19)) > datetime('now', '-10 days')
+),
+by_hour as (
+  select
+    strftime('%m-%d %H', time) as month_hour,
+    count(*) as count
+  from 
+    data
+  group by
+    month_hour
+)
+select
+  month_hour,
+  count
+from
+  by_hour
+order by
+  month_hour;
+
   EOQ
 }
 
-query "ask_and_show_by_hour" {
+query "ask_and_show_by_day" {
   sql = <<EOQ
-WITH data AS (
-  SELECT
-    substr(time, 1, 19) AS time_without_tz,
-    CASE 
-      WHEN title LIKE 'Ask HN:%' THEN 'Ask HN'
-      WHEN title LIKE 'Show HN:%' THEN 'Show HN'
-      ELSE 'Other'
-    END AS post_type
-  FROM
+with ask_hn as (
+  select
+    date(substr(time, 1, 19)) as day,
+    count(*) as ask_count
+  from
     hn
-  WHERE
-    time > datetime('now', '-10 days')
-    AND (title LIKE 'Ask HN:%' OR title LIKE 'Show HN:%')
+  where
+    datetime(substr(time, 1, 19)) > datetime('now', '-30 days')
+    and title LIKE 'Ask HN%'
+  group by
+    day
+  order by
+    day
 ),
-by_hour AS (
-  SELECT
-    time_without_tz,
-    strftime('%w', time_without_tz) AS day_of_week,
-    strftime('%d', time_without_tz) AS day_of_month,
-    strftime('%H', time_without_tz) AS hour_of_day,
-    post_type,
-    COUNT(*) AS count
-  FROM 
-    data
-  GROUP BY
-    time_without_tz, day_of_week, day_of_month, hour_of_day, post_type
+show_hn as (
+  select
+    date(substr(time, 1, 19)) as day,
+    count(*) as show_count
+  from
+    hn
+  where
+    datetime(substr(time, 1, 19)) > datetime('now', '-30 days')
+    and title LIKE 'Show HN%'
+  group by
+    day
+  order by
+    day
 )
-SELECT
-  CASE day_of_week
-    WHEN '0' THEN 'Su'
-    WHEN '1' THEN 'M'
-    WHEN '2' THEN 'Tu'
-    WHEN '3' THEN 'W'
-    WHEN '4' THEN 'Th'
-    WHEN '5' THEN 'F'
-    WHEN '6' THEN 'Sa'
-  END || ' ' || 
-  substr('0' || day_of_month, -2) || ' ' || 
-  substr('0' || hour_of_day, -2) AS day_hour,
-  SUM(CASE WHEN post_type = 'Ask HN' THEN count ELSE 0 END) AS "Ask HN",
-  SUM(CASE WHEN post_type = 'Show HN' THEN count ELSE 0 END) AS "Show HN"
-FROM
-  by_hour
-GROUP BY
-  time_without_tz
-ORDER BY
-  time_without_tz
+select
+  a.day,
+  a.ask_count as "Ask HN",
+  coalesce(s.show_count, 0) as "Show HN"
+from 
+  ask_hn a
+left join 
+  show_hn s 
+using 
+  (day);
+
   EOQ
 }
 
