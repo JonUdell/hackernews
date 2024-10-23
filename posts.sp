@@ -24,7 +24,7 @@ dashboard "Posts" {
   container {
 
     table {
-      title = "top-rated posts"
+      title = "high-scoring posts by recency"
       query = query.posts
       column "link" {
         href = "https://news.ycombinator.com/item?id={{.'link'}}"
