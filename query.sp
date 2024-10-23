@@ -321,8 +321,8 @@ query "posts" {
       score != 0
       and descendants != 0
     order by 
-      time desc
-    limit 200
+      score desc
+    limit 100
   EOQ
 }
 
