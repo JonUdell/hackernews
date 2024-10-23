@@ -303,26 +303,34 @@ query "people" {
 
 query "posts" {
   sql = <<EOQ
-    select 
-      id as link,
-      to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
-      title,
-      by,
-      score::int,
-      descendants::int as comments,
-      url,
-      case
-        when url = '' then ''
-        else substring(url from 'http[s]*://([^/$]+)')
-      end as domain
+    with data as (
+      select 
+        id as link,
+        to_char(time::timestamptz, 'YYYY-MM-DD hHH24') as time,
+        title,
+        by,
+        score::int,
+        descendants::int as comments,
+        url,
+        case
+          when url = '' then ''
+          else substring(url from 'http[s]*://([^/$]+)')
+        end as domain
+      from
+        hn
+      where 
+        score != 0
+        and descendants != 0
+      order by 
+        score desc
+      limit 200
+    )
+    select
+      *
     from
-      hn
-    where 
-      score != 0
-      and descendants != 0
-    order by 
-      score desc
-    limit 100
+      data
+    order by
+      time desc
   EOQ
 }
 
